@@ -41,6 +41,7 @@
     columnClass?: string
     children?: Snippet<[{ idx: number; item: NarrowedItem }]>
     div?: HTMLDivElement
+    onRedraw?: () => void
   }
 
   function isObjectItem(item: Item | ItemObject): item is ItemObject {
@@ -77,6 +78,7 @@
     columnClass = '',
     children,
     div = $bindable(undefined), // TODO add unit test for this prop
+    onRedraw,
   }: Props = $props()
 
   $effect.pre(() => {
@@ -98,6 +100,13 @@
         .map(() => []),
     ),
   )
+
+  // Call onRedraw when nCols changes
+  $effect(() => {
+    if (nCols) {
+      onRedraw?.()
+    }
+  })
 </script>
 
 <!-- deno-fmt-ignore -->
