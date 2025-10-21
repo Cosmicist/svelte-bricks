@@ -13,7 +13,7 @@
 
   async function fetch_gh_files(): Promise<File[]> {
     const icons_url =
-      `https://api.github.com/repos/vscode-icons/vscode-icons/contents/icons?ref=master`
+      'https://api.github.com/repos/vscode-icons/vscode-icons/contents/icons?ref=master'
     const response = await fetch(icons_url)
 
     if (response.ok) {
@@ -23,8 +23,7 @@
     }
   }
 
-  const example_code_url =
-    `${repository}/blob/-/src/routes/fetch-images-example/+page.svelte`
+  const example_code_url = `${repository}/blob/-/src/routes/fetch-images-example/+page.svelte`
 </script>
 
 <p>
@@ -42,7 +41,7 @@
     </a>
   </p>
   <Masonry items={files} idKey="name" minColWidth={100}>
-    {#snippet children({ item }: { item: File })}
+    {#snippet children({ item })}
       {@const { name, download_url } = item}
       <li>
         <span>{name.replace(`.svg`, ``).replaceAll(`_`, ` `)}</span>

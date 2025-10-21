@@ -58,15 +58,38 @@ Masonry size: <span>{width}px</span> &times; <span>{height}px</span> (w &times; 
 </Masonry>
 ```
 
-**Note**: If `items` is an array of objects, this component tries to access an `id` property on each item. This value is used to tell items apart in the keyed `{#each}` block that creates the masonry layout. Without it, Svelte could not avoid duplicates when new items are added or existing ones rearranged. Read the [Svelte docs](https://svelte.dev/tutorial/keyed-each-blocks) for details. To change the name of the identifier key, pass `idKey="some-uniq-key`. Or pass a function `getId = (item: Item) => string | number` that maps items to unique IDs.
+**Note**: If `items` is an array of objects, the idKey prop will be required. This value is used to tell items apart in the keyed `{#each}` block that creates the masonry layout. Without it, Svelte could not avoid duplicates when new items are added or existing ones rearranged. Read the [Svelte docs](https://svelte.dev/tutorial/keyed-each-blocks) for details. To change the name of the identifier key, pass `idKey="some-uniq-key`, note that the value for idKey will be any prop of your item that resolves to `string | number`, any other property names will result in error, since the value is properly narrowed down. You can also pass a function `getId = (item: Item) => string | number` that maps items to unique IDs.
 
 **Hint**: Balanced columns can be achieved even with this simple implementation if masonry items are allowed to stretch to the column height.
 
 ## Props
 
-`Masonry.svelte` expects an array of `items` as well as a `<slot />` component used to render each of the `items`. The array can contain whatever data (objects, strings, numbers) as long as the slot component knows how to handle it.
+`Masonry.svelte` expects an array of `items`, and an optional `children` snippet used to render each of the `items`. The array can contain whatever data (objects, strings, numbers) as long as the snippet knows how to handle it.
 
-Additional optional props are:
+Here is a list of all available props with their types and default values:
+
+1. ```ts
+   items: Item[]
+   ```
+
+   Required prop that defines the list of items to be rendered, where `Item` is a generic type which could be an object or a primitive (`string | number`).
+
+1. ```ts
+   getId = (item: Item) => string | number
+   ```
+
+   Custom function that maps masonry items to unique IDs of type `string | number`.
+   `item` type will be already narrowed for you, so you don't need to type the parameter when defining your custom getId function directly in the prop.
+
+1. ```ts
+   idKey: IdKey<Item>
+   ```
+
+   Name of the attribute used to get a unique identifier when `items` are objects.
+   **Required** if `Item` is an object.
+
+   The allowed value will be the name of any `Item` property that resolves to `string | number`.
+   The IDE should show you an autocomplete with the valid property names.
 
 1. ```ts
    animate: boolean = true
@@ -112,28 +135,6 @@ Additional optional props are:
    ```
 
    Gap between columns and items within each column in `px`.
-
-1. ```ts
-   getId = (item: Item): string | number => {
-     if (typeof item === `number`) return item
-     if (typeof item === `string`) return item
-     return item[idKey]
-   }
-   ```
-
-   Custom function that maps masonry items to unique IDs of type `string` or `number`.
-
-1. ```ts
-   idKey: string = `id`
-   ```
-
-   Name of the attribute to use as identifier if items are objects.
-
-1. ```ts
-   items: Item[]
-   ```
-
-   The only required prop are the list of items to render where `Item = $$Generic` is a generic type which usually will be `object` but can also be simple types `string` or `number`.
 
 1. ```ts
    masonryHeight: number = 0
